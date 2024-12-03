@@ -1,0 +1,6 @@
+*.bin
+*.json
+*.cph
+*.xml
+*.idea
+*.vscode
