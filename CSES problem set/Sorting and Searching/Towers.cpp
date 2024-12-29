@@ -33,8 +33,39 @@ struct custom_hash {
     }
 };
 
+ll insertTower(ll size,multiset<ll>& set){
+    if(set.empty()){
+        set.insert(size);
+        return 1;
+    }
+    auto up = set.upper_bound(size);
+    if(up==set.end()){
+        set.insert(size);
+        return 1;
+    }
+    if(*up==size) ++up;
+    if(up==set.end()){
+        set.insert(size);
+        return 1;
+    }
+    else{
+        set.erase(up);
+        set.insert(size);
+        return 0;
+    }
+}
+
 void solve(){
-    
+    ll n;
+    cin>>n;
+    multiset<ll> set;
+    ll count=0;
+    forn(0,n){
+        ll size;
+        cin>>size;
+        count+=insertTower(size,set);
+    }
+    cout<<count<<endl;
 }
 
 int main()
