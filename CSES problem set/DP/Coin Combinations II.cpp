@@ -63,55 +63,99 @@ struct custom_hash {
 //lets do tabular way, since runtime err aa rha h, maybe due to 10^6 recursion calls
 //but dusre questions me ye problem toh nhi hui thi.
 
-ll findWay(ll target,queue<ll>& a,vector<ll>& dp){
-    if(target==0) return 1;
-    if(a.empty()) return 0;
-    else if(target<0) return 0;
-    else if(dp[target]!=-1) return dp[target];
-    ll multiple = target/a.front();
-    ll first=a.front();
-    a.pop();
-    ll ways=0;
-    forn(1,multiple+1){
-        ll val = first*(i+0LL);
-        ways+=findWay(target-val,a,dp);
-    }
-    return dp[target]=ways;
+// void solve(){
+//     ll n,target;
+//     cin>>n>>target;
+//     vector<int> a(n,0);
+//     vector<vector<int>> dp(target+1,vector<int> (n+1,0));
+//     forn(0,n){
+//         int z;
+//         cin>>z;
+//         a[i]=z;
+//         dp[0][i]=1;
+//     }
+//     // cout<<findWay(target,q,dp);
+//     // dp[0][n]=1;
+//     // ll ways = (findWays(target,a,dp,0,n)%mod);
+//     forn(1,target+1){
+//         for(int val=0;val<n;val++){
+//             ll rem = i-a[val];
+//             ll ways=0;
+//             if(rem>=0){
+//                 ways+=(dp[rem][val]+0LL);
+//             }
+//             ways%=mod;
+//             if(val>0)
+//                 ways+=(dp[i][val-1]+0LL);
+//             ways%=mod;
+//             dp[i][val]=ways;
+//         }
+//     }
+//     cout<<dp[target][n-1]<<endl;
+// }
+//this gives RTE, the reason ig is, too much memory being used (~10^8)
+//so we used memory efficiency method to optimize memory usage.
+//remember, RTE on cses/other platforms can also be due to memory over used (especially when
+//all fail at same time and size).
 
-}
-
+// void solve(){
+//     ll n,target;
+//     cin>>n>>target;
+//     vector<int> a(n,0);
+//     long prev[target+1];
+//     long curr[target+1];
+//     forn(1,target+1){
+//         prev[i]=curr[i]=0;
+//     }
+//     prev[0]=curr[0]=1;
+//     forn(0,n){
+//         int z;
+//         cin>>z;
+//         a[i]=z;
+//     }
+//     forn(0,n){
+//         for(int j=1;j<=target;j++){
+//             ll ways=0;
+//             ways+=prev[j];
+//             ways%=mod;
+//             if(j-a[i]>=0)
+//                 ways+=curr[j-a[i]];
+//             ways%=mod;
+//             curr[j]=ways;
+//         }
+//         for(int j=1;j<=target;j++){
+//             prev[j]=curr[j];
+//             curr[j]=0;
+//         }
+//     }
+//     cout<<prev[target]<<endl;
+// }
+//isko 2 arr ke badle ek me bhi krsakte maybe.
 void solve(){
     ll n,target;
     cin>>n>>target;
-    // vecll a(n,0);
-    queue<ll> q;
-    vector<ll> dp(target+1,-1);
-    forn(0,n){
-        ll z;
-        cin>>z;
-        q.push(z);
-        // dp[0][i]=1;
+    vector<int> a(n,0);
+    long curr[target+1];
+    forn(1,target+1){
+        curr[i]=0;
     }
-    cout<<findWay(target,q,dp);
-    // dp[0][n]=1;
-    // ll ways = (findWays(target,a,dp,0,n)%mod);
-    // forn(1,target+1){
-    //     for(ll val=0;val<n;val++){
-    //         // ll rem = i-a[val];
-    //         // ll ways=0;
-    //         // if(rem>=0){
-    //         //     ways+=max<ll>(0,dp[rem][val]);
-    //         // }
-    //         // ways%=mod;
-    //         // if(val>0)
-    //         //     ways+=max<ll>(0,dp[i][val-1]);
-    //         // ways%=mod;
-    //         // dp[i][val]=ways;
-    //     }
-    // }
-    // ll ways=dp[target][n-1];
-    // ll ways=0;
-    // cout<<ways<<endl;
+    curr[0]=1;
+    forn(0,n){
+        int z;
+        cin>>z;
+        a[i]=z;
+    }
+    forn(0,n){
+        for(int j=1;j<=target;j++){
+            ll ways=curr[j];
+            ways%=mod;
+            if(j-a[i]>=0)
+                ways+=curr[j-a[i]];
+            ways%=mod;
+            curr[j]=ways;
+        }
+    }
+    cout<<curr[target]<<endl;
 }
 
 int main()
