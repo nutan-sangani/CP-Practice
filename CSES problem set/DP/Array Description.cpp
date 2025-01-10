@@ -70,34 +70,61 @@ void solve(){
     vecll a(n,0);
     forn(0,n) cin>>a[i];
     vector<vecll> dp(m+1,vecll (n+1,0));
-    forn(0,m+1){
-        dp[i][n]=1;
-    }
+    if(a[0]==0)
+        forn(0,m+1){
+            dp[i][0]=1;
+        }
+    else dp[a[0]][0]=1;
     // cout<<findWays(a,0,0,n,dp,m);
-    for(int i=n-1;i>=0;i--){
+    // for(int i=n-1;i>=0;i--){
+    //     for(int j=1;j<=m;j++){
+    //         //where i is index and j is the prev val;
+    //         if(a[i]!=0){
+    //             if(i==0 || (abs(j-a[i])<=1)){
+    //                 dp[j][i]+=dp[a[i]][i+1];
+    //                 dp[j][i]%=mod;
+    //             }
+    //             else dp[j][i]=0;
+    //         }
+    //         else if(a[i]==0 && i==0){
+    //             dp[0][0]+=dp[j][1];
+    //         }
+    //         else{
+    //             for(int k=0;k<3;k++){
+    //                 ll currVal = j + options[k];
+    //                 if(currVal<1 || currVal>m) continue;
+    //                 dp[j][i]+=dp[currVal][i+1];
+    //                 dp[j][i]%=mod;
+    //             }
+    //         }
+    //     }
+    // }
+    //1 tc is failing, moving to a simpler approach here
+    //now dp[i][j] will give jth index pe i aaya toh kitne arr ban sakte
+    forn(1,n){
         for(int j=1;j<=m;j++){
-            //where i is index and j is the prev val;
-            if(a[i]!=0){
-                if(i==0 || (abs(j-a[i])<=1)){
-                    dp[j][i]+=dp[a[i]][i+1];
-                    dp[j][i]%=mod;
-                }
-                else dp[j][i]=0;
-            }
-            else if(a[i]==0 && i==0){
-                dp[0][0]+=dp[j][1];
-            }
-            else{
+            if(a[i]==0 || a[i]==j)
                 for(int k=0;k<3;k++){
-                    ll currVal = j + options[k];
-                    if(currVal<1 || currVal>m) continue;
-                    dp[j][i]+=dp[currVal][i+1];
-                    dp[j][i]%=mod;
+                    ll prevVal = j+options[k];
+                    if(prevVal>0 && prevVal<=m){
+                        dp[j][i]+=dp[prevVal][i-1];
+                        dp[j][i]%=mod;
+                    }
                 }
-            }
         }
     }
-    cout<<dp[a[0]][0]<<endl;
+    if(a[n-1]==0){
+        dp[0][n-1]=0;
+        forn(1,m+1){
+            dp[a[n-1]][n-1]+=dp[i][n-1];
+            dp[a[n-1]][n-1]%=mod;
+        }
+    }
+    cout<<dp[a[n-1]][n-1]<<endl;
+    //now its accepted, jaruri nhi ki jo memo me kiya tha tabu me bhi wo hi krna h
+    //jo jyada logical lage wo kr, dont stop looking for a logical and easy answer
+    //tabu me dont take dp or method where the condition depends on prev no or prev something
+    //wese toh memo me bhi aisa mat kr. Memo me bhi aisa kiya hota toh mast tha.
     return;
 }
 
