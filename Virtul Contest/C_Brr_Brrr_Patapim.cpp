@@ -22,6 +22,31 @@
 using namespace std;
 using namespace __gnu_pbds;
 
+void debug(){
+    cout<<endl;
+}
+
+template<typename T,typename... Args>
+void debug(T firstArg,Args... args){
+    cout<<firstArg<<" ";
+    debug(args...);
+}
+
+template<typename T>
+void printArray(vector<T>& a){
+    int n = a.size();
+    forn(0,n) cout<<a[i]<<" ";
+    cout<<endl;
+}
+
+template<typename T>
+void printMatrix(vector<vector<T>>& a){
+    int rows = a.size();
+    forn(0,rows){
+        printArray(a[i]);
+    }
+}
+
 struct custom_hash {
     static uint64_t splitmix64(uint64_t x) {
         // http://xorshift.di.unimi.it/splitmix64.c
@@ -37,55 +62,38 @@ struct custom_hash {
     }
 };
 
-void build(vector<vector<int>>& distanceMap,int root,int parent,um<int,vector<int>>& tree){
-    int tempParent=parent;
-    int power = 0;
-    while(tempParent!=-1){
-        distanceMap[root][power]=tempParent;
-        tempParent = distanceMap[tempParent][power];
-        power+=1;
-    }
-    for(auto child : tree[root]){
-        build(distanceMap,child,root,tree);
-    }
-}
-
-ll query(int node,int level,vector<vector<int>>& distanceMap){
-    ll parent=node;
-    int i=0;
-    while(i<=31 && parent!=-1){
-        ll bitMask = 1LL<<i;
-        if(level & bitMask){
-            parent = distanceMap[parent][i];
-        }
-        else if(level<bitMask) break;
-        i++;
-    }
-    return parent;
-}
-
 void solve(){
-    int n,q;
-    cin>>n>>q;
-    um<int,vector<int>> tree;
-    forn(2,n+1){
-        ll parent;
-        cin>>parent;
-        tree[parent].pb(i);
+    int n;
+    cin>>n;
+    umll hasCame;
+    vecll ans(2*n+1,0);
+    forn(0,n){
+        for(int j=0;j<n;j++){
+            int num;
+            cin>>num;
+            hasCame[num]++;
+            ans[i+1+j+1]=num;
+        }
     }
-    vector<vector<int>> distanceMapFromRoot(n+1,vector<int> (40,-1));
-    build(distanceMapFromRoot,1,-1,tree);
-    while(q--){
-        ll node,level;
-        cin>>node>>level;
-        ll op = query(node,level,distanceMapFromRoot);
-        cout<<op<<endl;
+    forn(1,2*n+1){
+        if(hasCame[i]==0){
+            ans[1]=i;
+            break;
+        }
     }
+    forn(1,2*n+1){
+        cout<<ans[i]<<" ";
+    }
+    cout<<endl;
 }
 
 int main()
 {
     FASTIO
+    
+    int t;
+    cin>>t;
+    while(t--)
     {
         solve();
     }

@@ -22,6 +22,31 @@
 using namespace std;
 using namespace __gnu_pbds;
 
+void debug(){
+    cout<<endl;
+}
+
+template<typename T,typename... Args>
+void debug(T firstArg,Args... args){
+    cout<<firstArg<<" ";
+    debug(args...);
+}
+
+template<typename T>
+void printArray(vector<T>& a){
+    int n = a.size();
+    forn(0,n) cout<<a[i]<<" ";
+    cout<<endl;
+}
+
+template<typename T>
+void printMatrix(vector<vector<T>>& a){
+    int rows = a.size();
+    forn(0,rows){
+        printArray(a[i]);
+    }
+}
+
 struct custom_hash {
     static uint64_t splitmix64(uint64_t x) {
         // http://xorshift.di.unimi.it/splitmix64.c
@@ -37,55 +62,55 @@ struct custom_hash {
     }
 };
 
-void build(vector<vector<int>>& distanceMap,int root,int parent,um<int,vector<int>>& tree){
-    int tempParent=parent;
-    int power = 0;
-    while(tempParent!=-1){
-        distanceMap[root][power]=tempParent;
-        tempParent = distanceMap[tempParent][power];
-        power+=1;
+bool isValid(vecll& a,int k,ll c,ll d){
+    ll sum = 0;
+    ll i=0;
+    int n = a.size();
+    while(d--){
+        if(i<n)
+            sum+=a[i];
+        i = (i+1)%(k+1);
     }
-    for(auto child : tree[root]){
-        build(distanceMap,child,root,tree);
-    }
-}
-
-ll query(int node,int level,vector<vector<int>>& distanceMap){
-    ll parent=node;
-    int i=0;
-    while(i<=31 && parent!=-1){
-        ll bitMask = 1LL<<i;
-        if(level & bitMask){
-            parent = distanceMap[parent][i];
-        }
-        else if(level<bitMask) break;
-        i++;
-    }
-    return parent;
+    if(sum>=c) return true;
+    return false;
 }
 
 void solve(){
-    int n,q;
-    cin>>n>>q;
-    um<int,vector<int>> tree;
-    forn(2,n+1){
-        ll parent;
-        cin>>parent;
-        tree[parent].pb(i);
+    ll n,c,d;
+    cin>>n>>c>>d;
+    vecll a(n);
+    ll sum=0;
+    forn(0,n){
+        cin>>a[i];
     }
-    vector<vector<int>> distanceMapFromRoot(n+1,vector<int> (40,-1));
-    build(distanceMapFromRoot,1,-1,tree);
-    while(q--){
-        ll node,level;
-        cin>>node>>level;
-        ll op = query(node,level,distanceMapFromRoot);
-        cout<<op<<endl;
+    sort(itr(a),greater<ll>());
+    forn(0,min(n,d)) sum+=a[i];
+    if(sum>=c){
+        cout<<"Infinity"<<endl;
+        return;
     }
+    else if(a[0]*d < c){
+        cout<<"Impossible\n";
+        return;
+    }
+    ll low = 0,high = d;
+    while(low<=high){
+        ll mid = (low+high)/2;
+        if(isValid(a,mid,c,d)){
+            low = mid+1;
+        }
+        else high = mid-1;
+    }
+    cout<<high<<endl;
 }
 
 int main()
 {
     FASTIO
+    
+    int t;
+    cin>>t;
+    while(t--)
     {
         solve();
     }

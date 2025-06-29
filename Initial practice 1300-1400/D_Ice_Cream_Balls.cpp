@@ -17,10 +17,10 @@ using namespace std;
 
 ll calculate(ll n){
     if(n%2==0){
-        return (n/2LL)*(n-1)*1ll;
+        return (n/2LL)*(n-1LL)*1ll;
     }
     else{
-        return ((n-1)/2LL)*n*1LL;
+        return ((n-1LL)/2LL)*n*1LL;
     }
 }
 
@@ -28,9 +28,9 @@ void helper(ll n)
 {
     ll low,high;
     low=0;
-    high=min<ll>(2*n,(2e9));
-    while(low<high){
-        ll mid=(low+high)/2;
+    high=min<ll>(2*n,(2000000000LL));
+    while(low<=high){
+        ll mid=low + (high-low)/2LL;
         ll sum = calculate(mid);
         if(sum<n){
             low=mid+1;
@@ -43,7 +43,7 @@ void helper(ll n)
             return;
         }
     }
-    ll term = low-1;
+    ll term = high;
     ll val = calculate(term);
     ll diff = n - val;
     term+=diff;

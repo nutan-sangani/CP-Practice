@@ -22,6 +22,31 @@
 using namespace std;
 using namespace __gnu_pbds;
 
+void debug(){
+    cout<<endl;
+}
+
+template<typename T,typename... Args>
+void debug(T firstArg,Args... args){
+    cout<<firstArg<<" ";
+    debug(args...);
+}
+
+template<typename T>
+void printArray(vector<T>& a){
+    int n = a.size();
+    forn(0,n) cout<<a[i]<<" ";
+    cout<<endl;
+}
+
+template<typename T>
+void printMatrix(vector<vector<T>>& a){
+    int rows = a.size();
+    forn(0,rows){
+        printArray(a[i]);
+    }
+}
+
 struct custom_hash {
     static uint64_t splitmix64(uint64_t x) {
         // http://xorshift.di.unimi.it/splitmix64.c
@@ -37,55 +62,49 @@ struct custom_hash {
     }
 };
 
-void build(vector<vector<int>>& distanceMap,int root,int parent,um<int,vector<int>>& tree){
-    int tempParent=parent;
-    int power = 0;
-    while(tempParent!=-1){
-        distanceMap[root][power]=tempParent;
-        tempParent = distanceMap[tempParent][power];
-        power+=1;
-    }
-    for(auto child : tree[root]){
-        build(distanceMap,child,root,tree);
-    }
-}
-
-ll query(int node,int level,vector<vector<int>>& distanceMap){
-    ll parent=node;
-    int i=0;
-    while(i<=31 && parent!=-1){
-        ll bitMask = 1LL<<i;
-        if(level & bitMask){
-            parent = distanceMap[parent][i];
-        }
-        else if(level<bitMask) break;
-        i++;
-    }
-    return parent;
-}
-
 void solve(){
-    int n,q;
-    cin>>n>>q;
-    um<int,vector<int>> tree;
-    forn(2,n+1){
-        ll parent;
-        cin>>parent;
-        tree[parent].pb(i);
+    string p,s;
+    cin>>p>>s;
+    int pL = p.size();
+    int sL = s.size();
+    int i=0,j=0;
+    while(i<pL && j<sL){
+        int pCount = 0,sCount=0;
+        if(p[i]==s[j]){
+            char first = p[i];
+            while(i<pL && p[i]==first){
+                pCount++;
+                i++;
+            }
+            while(j<sL && s[j]==first){
+                sCount++;
+                j++;
+            }
+            int l=pCount,r=pCount*2;
+            if(sCount>r || sCount<l){
+                cout<<"NO"<<endl;
+                return;
+            }
+        }
+        else{
+            cout<<"NO"<<endl;
+            return;
+        }
     }
-    vector<vector<int>> distanceMapFromRoot(n+1,vector<int> (40,-1));
-    build(distanceMapFromRoot,1,-1,tree);
-    while(q--){
-        ll node,level;
-        cin>>node>>level;
-        ll op = query(node,level,distanceMapFromRoot);
-        cout<<op<<endl;
+    if(i<pL || j<sL){
+        cout<<"NO"<<endl;
+        return;
     }
+    cout<<"YES"<<endl;
 }
 
 int main()
 {
     FASTIO
+    
+    int t;
+    cin>>t;
+    while(t--)
     {
         solve();
     }

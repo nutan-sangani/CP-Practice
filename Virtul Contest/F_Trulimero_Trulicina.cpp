@@ -22,6 +22,31 @@
 using namespace std;
 using namespace __gnu_pbds;
 
+void debug(){
+    cout<<endl;
+}
+
+template<typename T,typename... Args>
+void debug(T firstArg,Args... args){
+    cout<<firstArg<<" ";
+    debug(args...);
+}
+
+template<typename T>
+void printArray(vector<T>& a){
+    int n = a.size();
+    forn(0,n) cout<<a[i]<<" ";
+    cout<<endl;
+}
+
+template<typename T>
+void printMatrix(vector<vector<T>>& a){
+    int rows = a.size();
+    forn(0,rows){
+        printArray(a[i]);
+    }
+}
+
 struct custom_hash {
     static uint64_t splitmix64(uint64_t x) {
         // http://xorshift.di.unimi.it/splitmix64.c
@@ -37,55 +62,53 @@ struct custom_hash {
     }
 };
 
-void build(vector<vector<int>>& distanceMap,int root,int parent,um<int,vector<int>>& tree){
-    int tempParent=parent;
-    int power = 0;
-    while(tempParent!=-1){
-        distanceMap[root][power]=tempParent;
-        tempParent = distanceMap[tempParent][power];
-        power+=1;
-    }
-    for(auto child : tree[root]){
-        build(distanceMap,child,root,tree);
-    }
-}
-
-ll query(int node,int level,vector<vector<int>>& distanceMap){
-    ll parent=node;
-    int i=0;
-    while(i<=31 && parent!=-1){
-        ll bitMask = 1LL<<i;
-        if(level & bitMask){
-            parent = distanceMap[parent][i];
-        }
-        else if(level<bitMask) break;
-        i++;
-    }
-    return parent;
-}
-
 void solve(){
-    int n,q;
-    cin>>n>>q;
-    um<int,vector<int>> tree;
-    forn(2,n+1){
-        ll parent;
-        cin>>parent;
-        tree[parent].pb(i);
+    ll n,m,k;
+    cin>>n>>m>>k;
+    vector<vecll> grid(n,vecll(m,0));
+    int count = 1;
+    if(m%k==0){
+        deque<int> q;
+        forn(0,m){
+            q.push_back(count);
+            count++;
+            if(count==k+1){
+                count=1;
+            }
+        }
+        forn(0,n){
+            deque<int> copyQ(q);
+            if(i%2!=0){
+                copyQ.push_back(copyQ.front());
+                copyQ.pop_front();
+            }
+            for(int j=0;j<m;j++){
+                grid[i][j] = copyQ.front();
+                copyQ.pop_front();
+            }
+        }
     }
-    vector<vector<int>> distanceMapFromRoot(n+1,vector<int> (40,-1));
-    build(distanceMapFromRoot,1,-1,tree);
-    while(q--){
-        ll node,level;
-        cin>>node>>level;
-        ll op = query(node,level,distanceMapFromRoot);
-        cout<<op<<endl;
+    else{
+        forn(0,n){
+            for(int j=0;j<m;j++){
+                grid[i][j] = count;
+                count+=1;
+                if(count==k+1){
+                    count=1;
+                }
+            }
+        }
     }
+    printMatrix(grid);
 }
 
 int main()
 {
     FASTIO
+    
+    int t;
+    cin>>t;
+    while(t--)
     {
         solve();
     }
